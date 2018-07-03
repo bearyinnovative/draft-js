@@ -1,13 +1,16 @@
 {
-  "name": "draft-js",
+  "name": "@beary/draft-js",
   "description": "A React framework for building text editors.",
-  "version": "0.10.5",
+  "version": "0.10.6",
   "keywords": [
     "draftjs",
     "editor",
     "react",
     "richtext"
   ],
+  "publishConfig": {
+    "registry": "http://120.25.239.87:8081/artifactory/api/npm/npm-local"
+  },
   "homepage": "http://draftjs.org/",
   "bugs": "https://github.com/facebook/draft-js/issues",
   "files": [
