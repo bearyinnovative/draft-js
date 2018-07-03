@@ -182,4 +182,12 @@ function editOnInput(editor: DraftEditor): void {
   );
 }
 
-module.exports = editOnInput;
+module.exports = (
+  editor: DraftEditor,
+) => {
+  try {
+    editOnInput(editor);
+  } catch (e) {
+    editor.props.onErrorThrow && editor.props.onErrorThrow(e);
+  }
+};

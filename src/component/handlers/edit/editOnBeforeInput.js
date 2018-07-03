@@ -231,4 +231,13 @@ function editOnBeforeInput(
   });
 }
 
-module.exports = editOnBeforeInput;
+module.exports = (
+  editor: DraftEditor,
+  e: SyntheticInputEvent<>
+) => {
+  try {
+    editOnBeforeInput(editor, e);
+  } catch (e) {
+    editor.props.onErrorThrow && editor.props.onErrorThrow(e);
+  }
+};
