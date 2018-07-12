@@ -130,6 +130,14 @@ class UpdateDraftEditorFlags extends React.Component<{
   }
 }
 
+class AbstractOperationsRecorder {
+  constructor(size: number = 10) {}
+  addOp(op: string) {}
+  getAll(): Array {}
+  toString(): string {}
+  clear() {}
+}
+
 /**
  * `DraftEditor` is the root editor component. It composes a `contentEditable`
  * div, and provides a wide variety of useful function props for managing the
@@ -144,6 +152,7 @@ class DraftEditor extends React.Component<DraftEditorProps, State> {
     readOnly: false,
     spellCheck: false,
     stripPastedStyles: false,
+    operationsRecorder: new AbstractOperationsRecorder(),
   };
 
   _blockSelectEvents: boolean;
