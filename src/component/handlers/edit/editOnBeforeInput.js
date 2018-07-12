@@ -78,6 +78,7 @@ function editOnBeforeInput(
   editor: DraftEditor,
   e: SyntheticInputEvent<>,
 ): void {
+  editor.props.operationsRecorder.addOp('editOnBeforeInput:start');
   if (editor._pendingStateFromBeforeInput !== undefined) {
     editor.update(editor._pendingStateFromBeforeInput);
     editor._pendingStateFromBeforeInput = undefined;
@@ -90,6 +91,7 @@ function editOnBeforeInput(
   // In some cases (ex: IE ideographic space insertion) no character data
   // is provided. There's nothing to do when this happens.
   if (!chars) {
+    editor.props.operationsRecorder.addOp('editOnBeforeInput:end(no_char_provided)');
     return;
   }
 
@@ -103,6 +105,7 @@ function editOnBeforeInput(
     isEventHandled(editor.props.handleBeforeInput(chars, editorState))
   ) {
     e.preventDefault();
+    editor.props.operationsRecorder.addOp('editOnBeforeInput:end(manually_handled)');
     return;
   }
 
@@ -147,6 +150,7 @@ function editOnBeforeInput(
         ),
       );
     }
+    editor.props.operationsRecorder.addOp('editOnBeforeInput:end(selection_not_collapsed)');
     return;
   }
 
@@ -211,6 +215,7 @@ function editOnBeforeInput(
   if (mustPreventNative) {
     e.preventDefault();
     editor.update(newEditorState);
+    editor.props.operationsRecorder.addOp('editOnBeforeInput:end');
     return;
   }
 
@@ -229,6 +234,7 @@ function editOnBeforeInput(
       editor._pendingStateFromBeforeInput = undefined;
     }
   });
+  editor.props.operationsRecorder.addOp('editOnBeforeInput:end(selection_collapsed)');
 }
 
 module.exports = (

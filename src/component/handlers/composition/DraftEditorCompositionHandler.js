@@ -56,6 +56,7 @@ var DraftEditorCompositionHandler = {
    * mode. Continue the current composition session to prevent a re-render.
    */
   onCompositionStart: function(editor: DraftEditor): void {
+    editor.props.operationsRecorder.addOp('composition:start');
     stillComposing = true;
   },
 
@@ -74,6 +75,7 @@ var DraftEditorCompositionHandler = {
    * Google Input Tools on Windows 8.1 fires `compositionend` three times.
    */
   onCompositionEnd: function(editor: DraftEditor): void {
+    editor.props.operationsRecorder.addOp('composition:end');
     resolved = false;
     stillComposing = false;
     setTimeout(() => {

@@ -19,9 +19,11 @@ var EditorState = require('EditorState');
 var UserAgent = require('UserAgent');
 
 function editOnFocus(editor: DraftEditor, e: SyntheticFocusEvent<>): void {
+  editor.props.operationsRecorder.addOp('editOnFocus:start');
   var editorState = editor._latestEditorState;
   var currentSelection = editorState.getSelection();
   if (currentSelection.getHasFocus()) {
+    editor.props.operationsRecorder.addOp('editOnFocus:end(selection_has_focus)');
     return;
   }
 
@@ -40,9 +42,12 @@ function editOnFocus(editor: DraftEditor, e: SyntheticFocusEvent<>): void {
   // doesn't preserve the selection, matching how textareas work.
   if (UserAgent.isBrowser('Chrome < 60.0.3081.0')) {
     editor.update(EditorState.forceSelection(editorState, selection));
+    editor.props.operationsRecorder.addOp('editOnFocus:end(force_selection)');
   } else {
     editor.update(EditorState.acceptSelection(editorState, selection));
+    editor.props.operationsRecorder.addOp('editOnFocus:end(accept_selection)');
   }
+  editor.props.operationsRecorder.addOp('editOnFocus:end');
 }
 
 module.exports = editOnFocus;

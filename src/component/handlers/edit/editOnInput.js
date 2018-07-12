@@ -41,6 +41,7 @@ var DOUBLE_NEWLINE = '\n\n';
  * due to a spellcheck change, and we can incorporate it into our model.
  */
 function editOnInput(editor: DraftEditor): void {
+  editor.props.operationsRecorder.addOp('editOnInput:start');
   if (editor._pendingStateFromBeforeInput !== undefined) {
     editor.update(editor._pendingStateFromBeforeInput);
     editor._pendingStateFromBeforeInput = undefined;
@@ -56,11 +57,13 @@ function editOnInput(editor: DraftEditor): void {
 
   if (gkx('draft_killswitch_allow_nontextnodes')) {
     if (isNotTextNode) {
+      editor.props.operationsRecorder.addOp('editOnInput:end(not_text_node)');
       return;
     }
   } else {
     if (isNotTextOrElementNode) {
       // TODO: (t16149272) figure out context for this change
+      editor.props.operationsRecorder.addOp('editOnInput:end(not_text_or_element_node)');
       return;
     }
   }
@@ -113,6 +116,7 @@ function editOnInput(editor: DraftEditor): void {
     // standard onkeydown/pressed events and only fired editOnInput
     // so domText is already changed by the browser and ends up being equal
     // to modelText unexpectedly
+    editor.props.operationsRecorder.addOp('editOnInput:end(no_change)');
     return;
   }
 
@@ -155,6 +159,7 @@ function editOnInput(editor: DraftEditor): void {
     endOffset = startOffset + Math.abs(anchorOffset - focusOffset);
     anchorOffset = startOffset;
     focusOffset = endOffset;
+    editor.props.operationsRecorder.addOp('editOnInput:handling(is_gecko)');
   } else {
     // Browsers other than Firefox may adjust DOM selection while the context
     // menu is open, and Safari autocorrect is prone to providing an inaccurate
@@ -167,6 +172,7 @@ function editOnInput(editor: DraftEditor): void {
 
     anchorOffset = isCollapsed ? endOffset + charDelta : startOffset;
     focusOffset = endOffset + charDelta;
+    editor.props.operationsRecorder.addOp('editOnInput:handling(not_gecko)');
   }
 
   // Segmented entities are completely or partially removed when their
@@ -180,6 +186,8 @@ function editOnInput(editor: DraftEditor): void {
   editor.update(
     EditorState.push(editorState, contentWithAdjustedDOMSelection, changeType),
   );
+
+  editor.props.operationsRecorder.addOp('editOnInput:end');
 }
 
 module.exports = (
