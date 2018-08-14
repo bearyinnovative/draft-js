@@ -8,6 +8,9 @@
     "react",
     "richtext"
   ],
+  "publishConfig": {
+    "registry": "http://116.85.45.93:4873"
+  },
   "homepage": "http://draftjs.org/",
   "bugs": "https://github.com/facebook/draft-js/issues",
   "files": [
